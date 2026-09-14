@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/*
+ * Palette: neutral surfaces with a single cobalt accent for action, and three semantic
+ * hues reserved for verification status. The accent is deliberately not the default UI
+ * blue, and never appears on a status — so an action never reads as a verdict.
+ */
+@theme {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --color-canvas: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-raised: #ffffff;
+  --color-line: #e4e7ec;
+  --color-line-soft: #eef1f4;
+  --color-ink: #10131a;
+  --color-muted: #5b6472;
+  --color-faint: #8b95a4;
+
+  --color-accent: #2f43e8;
+  --color-accent-hi: #2233c9;
+  --color-accent-wash: #eef0fe;
+
+  --color-clear: #12805c;
+  --color-clear-wash: #e6f5ef;
+  --color-hold: #c98a1a;
+  --color-hold-wash: #fdf1de;
+  --color-dead: #8f1d2b;
+  --color-dead-wash: #fdecea;
+  --color-idle: #6b7280;
+  --color-idle-wash: #f0f2f5;
+
+  --shadow-card: 0 1px 2px rgba(16, 19, 26, 0.05), 0 6px 20px -8px rgba(16, 19, 26, 0.10);
+  --shadow-pop: 0 24px 60px -16px rgba(16, 19, 26, 0.32);
+  --color-scrim: rgba(12, 14, 19, 0.42);
+}
+
+@layer theme {
+  .dark {
+    --color-canvas: #0c0e13;
+    --color-surface: #14171e;
+    --color-raised: #191d26;
+    --color-line: #262b36;
+    --color-line-soft: #1e222b;
+    --color-ink: #eef1f6;
+    --color-muted: #98a2b3;
+    --color-faint: #6c7686;
+
+    --color-accent: #7c8cff;
+    --color-accent-hi: #9aa6ff;
+    --color-accent-wash: #1b2040;
+
+    --color-clear: #34d399;
+    --color-clear-wash: #10291f;
+    --color-hold: #f0c46a;
+    --color-hold-wash: #2b2113;
+    --color-dead: #d14a5a;
+    --color-dead-wash: #2c1715;
+    --color-idle: #9aa3b2;
+    --color-idle-wash: #1c2028;
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px -10px rgba(0, 0, 0, 0.7);
+    --shadow-pop: 0 28px 70px -18px rgba(0, 0, 0, 0.8);
+    --color-scrim: rgba(4, 5, 8, 0.72);
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.dark { color-scheme: dark; }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+  }
+
+  /* Figures are readings: mono, tabular, aligned down the column. */
+  .fig {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "zero" 1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection { background: var(--color-accent-wash); }
+
+  /* Motion is opt-out at the source, so no component has to remember. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  @keyframes sweep { 100% { transform: translateX(100%); } }
+  .sweep { position: relative; overflow: hidden; }
+  .sweep::after {
+    content: "";
+    position: absolute; inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-ink) 7%, transparent), transparent);
+    animation: sweep 1.6s ease-in-out infinite;
+  }
+}
