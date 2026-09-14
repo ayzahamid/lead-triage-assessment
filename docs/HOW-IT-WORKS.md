@@ -83,6 +83,7 @@ drift. Verification is cached, so the re-run costs no DNS work.
 Optional and scoped. It never touches the score or the verdict.
 
 - Batch size **25**, four batches concurrently, capped at **100 leads**.
+- Timeout **50 s**, kept under the 60 s serverless function ceiling so a slow provider degrades to partial results instead of being killed with nothing to show.
 - Excluded: duplicates, undeliverable addresses, and optionally leads that already carry context.
 - Sent: company, title, employees, industry, revenue. **Never sent:** email, phone, contact name.
 - Returns fit 1–5, a signal, and a reason capped at 140 characters, all coerced and clamped.

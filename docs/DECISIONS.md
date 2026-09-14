@@ -96,16 +96,22 @@ finishes in ~0.4s — while the processing screen's own entrance is still runnin
 enter with exit could leave the exit unresolved and the results screen never mounted. It was a
 real hang. Each pane animates its own contents in, so the crossfade bought nothing.
 
-## Production scaling path, documented not deployed
+## Serverless functions, not a container, for the demo
 
-The container is the point: hosting stays a deployment decision rather than an architectural
-one.
+Both work, because nothing in `lib/` is provider-specific. Vercel won on the one thing a
+reviewer actually experiences: a free always-on container sleeps after 15 minutes and takes
+about a minute to wake, while a serverless function cold-starts in about 200 ms. A reviewer
+who waits a minute on a blank page has already formed an opinion.
 
-```bash
-docker build -t lead-triage .
-docker push <acct>.dkr.ecr.<region>.amazonaws.com/lead-triage:latest
-# Fargate 0.25 vCPU / 512 MB behind an ALB, secrets in Secrets Manager, logs to CloudWatch
-```
+The constraint that decides it is the **Node.js runtime**. Verification calls native
+`dns.resolveMx`, which exists there but not on the Edge runtime's V8 isolates, so every route
+declares `runtime = 'nodejs'` explicitly rather than inheriting a default that could change.
 
-ECS was deliberately not used for the demo. An ALB alone runs about $16/month and needs a
-payment method, and it would not enable SMTP verification anyway.
+That runtime also caps a function at 60 seconds on the free tier, which is why model calls
+give up at 50. A call killed by the platform returns nothing; one that gives up first lets the
+run keep what it gathered and say so.
+
+The Dockerfile stays, and is what `docker compose up` runs locally. It is also the portability
+path — the same image runs on Fargate or Cloud Run unchanged — so hosting stays a deployment
+decision rather than an architectural one. `output: 'standalone'` is gated behind
+`BUILD_STANDALONE`, because the Docker runtime stage needs it and Vercel does not.

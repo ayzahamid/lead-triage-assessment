@@ -94,9 +94,9 @@ Postgres (Neon) — or in-memory when DATABASE_URL is unset
 | **Data storage** | Postgres 16, Neon in production. Leads keyed on normalised email, deduplicated on email then company plus contact. Derived columns sit alongside the original row, which is never mutated. Schema creation is idempotent |
 | **Caching** | Verification cached per **domain**, not per address, with a 48-hour TTL. The sample's 469 leads resolve to 31 domains, removing about 94% of the DNS work. AI judgments cached per domain and ICP for seven days |
 | **Performance** | DNS on a bounded pool of 10 with per-lookup timeouts, so one dead domain cannot stall a batch. Results stream over SSE. The table pages, bounding the DOM to at most 100 rows. Postgres indexes `(dataset_id, tier, status, score DESC)` |
-| **Hosting** | Serverless container, scales to zero. Chosen over static-plus-functions because verification needs a real network stack for native `dns.resolveMx`, which function sandboxes restrict |
-| **Deployment** | Push to `main` builds and deploys. Configuration is entirely environment variables. Multi-stage Dockerfile, non-root user, health check |
-| **Cloud** | Render for compute, Neon for Postgres, both on free tiers needing no payment method. The image is provider-agnostic: the same one runs on ECS Fargate or Cloud Run unchanged |
+| **Hosting** | Vercel serverless functions on the **Node.js runtime**, which matters: verification calls native `dns.resolveMx`, available there but not on the Edge runtime's V8 isolates. Scales to zero, and cold starts are ~200 ms rather than the ~60 s a free always-on container costs a first visitor |
+| **Deployment** | Push to `main` builds and deploys. Configuration is entirely environment variables — one, and it is optional. The repo also ships a multi-stage Dockerfile (non-root, health check) used for local development and as the portability path |
+| **Cloud** | Vercel for compute, Neon for Postgres, both free and neither needing a payment method. Nothing is provider-specific: there is no Vercel or Neon SDK anywhere in `lib/`, just the `postgres` driver and raw SQL, so moving means changing one connection string |
 
 Measured in Chrome against the container: 274 kB first load, 120 ms first contentful paint,
 3–7 ms of synchronous work per keystroke, no long tasks while filtering 469 leads.
@@ -136,5 +136,5 @@ addresses. Nothing is retained beyond your own library, and no analytics run.
 
 ## Stack
 
-Next.js 16 · React 19 · TypeScript (strict) · Tailwind v4 · Motion · Postgres 16 / Neon ·
-Papa Parse · Docker
+Next.js 16 · React 19 · TypeScript (strict) · Tailwind v4 · Motion · Postgres / Neon ·
+Papa Parse · Vercel · Docker (local)

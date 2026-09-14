@@ -123,7 +123,12 @@ export type ModelResult =
   | { ok: true; items: unknown[] }
   | { ok: false; reason: string }
 
-export const DEFAULT_TIMEOUT_MS = 210_000
+/*
+  Kept under the serverless function ceiling (60s on Vercel Hobby). A model call that runs
+  past it is killed by the platform mid-flight, which returns nothing at all; giving up first
+  lets the caller keep whatever came back and say so.
+*/
+export const DEFAULT_TIMEOUT_MS = 50_000
 
 export async function callModel(
   { provider, model, prompt, apiKey, sessionId, timeoutMs = DEFAULT_TIMEOUT_MS }: ModelCall,

@@ -9,7 +9,7 @@ export const BATCH_SIZE = 25
 
 export const MAX_ENRICHED = BATCH_SIZE * BATCH_CONCURRENCY
 
-const REQUEST_TIMEOUT_MS = 210_000
+const REQUEST_TIMEOUT_MS = 50_000
 
 export type AiOutcome =
   | { ok: true; insights: Map<string, AiInsight>; batches: number }
