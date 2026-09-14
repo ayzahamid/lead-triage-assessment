@@ -1,5 +1,3 @@
-# One command to run the whole system, database included:
-#   docker compose up
 services:
   app:
     build: .
@@ -18,8 +16,6 @@ services:
       POSTGRES_PASSWORD: triage
       POSTGRES_DB: triage
     ports:
-      # Host 5433 so this never collides with a Postgres already installed locally.
-      # The app reaches the database at db:5432 on the compose network regardless.
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data

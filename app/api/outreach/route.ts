@@ -4,7 +4,7 @@ import { getStore } from '@/lib/store/index'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-// Serverless ceiling: 60s is the Vercel Hobby maximum.
+
 export const maxDuration = 60
 
 const MAX_LEADS = 10
