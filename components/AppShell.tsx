@@ -136,9 +136,9 @@ export function AppShell({
       <m.aside
         animate={{ width: collapsed ? '3.75rem' : '13.5rem' }}
         transition={spring}
-        className="hidden shrink-0 overflow-hidden border-r border-line bg-surface lg:block"
+        className="sticky top-0 hidden h-dvh shrink-0 self-start overflow-hidden border-r border-line bg-surface lg:block"
       >
-        <div className="sticky top-0 flex h-dvh flex-col">
+        <div className="flex h-full flex-col">
           <div className="min-h-0 flex-1">{rail(collapsed)}</div>
           <div className={`border-t border-line py-2 ${collapsed ? 'px-2' : 'px-3'}`}>
             <Button
