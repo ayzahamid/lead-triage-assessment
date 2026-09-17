@@ -5,8 +5,6 @@
 Built for the Caprae Capital Full Stack Developer assessment, as an enhancement to
 [SaaSquatch Leads](https://www.saasquatchleads.com/).
 
-<!-- Add once deployed: **Live demo:** <url> · **Walkthrough video:** <url> -->
-
 ![469 leads verified, scored and ready to export](docs/img/results.png)
 
 ## The problem
